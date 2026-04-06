@@ -1,0 +1,25 @@
+name: Shelby Monthly Validation
+on:
+  schedule:
+    # S'exécute à 00:00 le 1er de chaque mois
+    - cron: '0 0 1 * *'
+  workflow_dispatch: # Permet de lancer le script manuellement pour tester
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install Dependencies
+        run: npm install @shelby-protocol/sdk @aptos-labs/ts-sdk
+        
+      - name: Run Validation Script
+        env:
+          PRIVATE_KEY: ${{ secrets.APTOS_PRIVATE_KEY }}
+        run: node shelby-script.js
